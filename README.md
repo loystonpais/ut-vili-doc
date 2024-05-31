@@ -132,7 +132,34 @@ BOARD_KERNEL_CMDLINE += ip6table_raw.raw_before_defrag=1
 BOARD_KERNEL_CMDLINE += firmware_class.path=/vendor/firmware
 ```
 
-putting some of them in a single line:
+putting some of them in a single line (organized by me):
  ```sh
- androidboot.console=ttyMSM0 androidboot.hardware=qcom androidboot.memcg=1 androidboot.usbcontroller=a600000.dwc3 cgroup.memory=nokmem,nosocket console=ttyMSM0,115200n8 loop.max_part=7 msm_rtb.filter=0x237 service_locator.enable=1 swiotlb=0 pcie_ports=compat
+ androidboot.hardware=qcom androidboot.console=ttyMSM0 androidboot.memcg=1 androidboot.usbcontroller=a600000.dwc3 service_locator.enable=1 msm_rtb.filter=0x237 loop.max_part=7 cgroup.memory=nokmem,nosocket console=ttyMSM0,115200n8 swiotlb=0 pcie_ports=compat
 ```
+
+this is the line from vayu (organized by me)
+`deviceinfo_kernel_cmdline="androidboot.hardware=qcom androidboot.console=ttyMSM0 androidboot.memcg=1 androidboot.usbcontroller=a600000.dwc3 service_locator.enable=1 msm_rtb.filter=0x237 loop.max_part=7 lpm_levels.sleep_disabled=1 video=vfb:640x400,bpp=32,memsize=3072000  swiotlb=2048 console=tty0"`
+
+this is from the doc
+`deviceinfo_kernel_cmdline="console=tty0 bootopt=64S3,32N2,64N2 systempart=/dev/mapper/system"`
+</br>
+
+I used chatgpt to gather some info on these parameters.
+
+See `chatgpt on kernel parameters.md` </br>
+
+With all this in mind, I came to a conclusion. I'll use </br>
+
+`androidboot.hardware=qcom androidboot.console=ttyMSM0 androidboot.memcg=1 androidboot.usbcontroller=a600000.dwc3 service_locator.enable=1 msm_rtb.filter=0x237 loop.max_part=7`
+`console=tty0 bootopt=64S3,32N2,64N2 systempart=/dev/mapper/system`
+`swiotlb=0`
+
+</br>
+
+then setting the bootimg header verion to 3.
+Apparently that's what you need for android11
+https://source.android.com/docs/core/architecture/bootloader/boot-image-header
+
+Also, I noticed, the KernelSU page seems to suggest that my device is non-gki??
+I also found vili_defconfig in https://github.com/diphons/D8G_Kernel_SM8350 .
+Just unsure if If its any useful for me or not
